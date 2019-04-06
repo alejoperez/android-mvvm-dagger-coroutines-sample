@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="etUtils"
+            type="com.mvvm.dagger.coroutines.sample.utils.EditTextUtils" />
+
+        <variable
+            name="viewModel"
+            type="com.mvvm.dagger.coroutines.sample.register.RegisterViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context="com.mvvm.dagger.coroutines.sample.register.RegisterActivity">
+
+        <EditText
+            android:id="@+id/etName"
+            style="@style/EditTextTheme"
+            errorText="@{viewModel.errorName}"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="@string/register_name_hint"
+            android:inputType="textPersonName"
+            android:text="@={viewModel.name}"
+            app:layout_constraintBottom_toTopOf="@+id/etEmail"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <EditText
+            android:id="@+id/etEmail"
+            style="@style/EditTextTheme"
+            errorText="@{viewModel.errorEmail}"
+            filters="@{etUtils.whiteSpaceFilters}"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="@string/register_email_hint"
+            android:inputType="textEmailAddress"
+            android:text="@={viewModel.email}"
+            app:layout_constraintBottom_toTopOf="@+id/etPassword"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+
+        <EditText
+            android:id="@+id/etPassword"
+            style="@style/EditTextTheme"
+            errorText="@{viewModel.errorPassword}"
+            filters="@{etUtils.whiteSpaceFilters}"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="@string/register_password_hint"
+            android:inputType="textPassword"
+            android:text="@={viewModel.password}"
+            app:layout_constraintBottom_toTopOf="@+id/btRegister"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+
+        <ProgressBar
+            android:id="@+id/progress"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="@{safeUnbox(viewModel.isLoading) ? View.VISIBLE : View.INVISIBLE }"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/btRegister"
+            style="@style/ButtonAccentTheme"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:onClick="@{() -> viewModel.register()}"
+            android:text="@string/register_button"
+            android:theme="@style/ButtonAccentTheme"
+            android:visibility="@{safeUnbox(viewModel.isLoading) ? View.INVISIBLE : View.VISIBLE }"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+        <TextView
+            android:id="@+id/tvGoToLogin"
+            style="@style/TextViewMediumBoldTheme"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:focusable="true"
+            android:text="@string/register_go_to_login"
+            android:textColor="@color/colorAccent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btRegister" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

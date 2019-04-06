@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">mvvm-sample</string>
+
+    <string name="accept">Accept</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+
+    <!-- Errors START-->
+    <string name="error_network">Network Error</string>
+    <string name="error_splash">Splash Error</string>
+    <string name="error_user">User Error</string>
+    <string name="error_invalid_credentials">Invalid Credentials</string>
+    <string name="error_invalid_email">Invalid Email Format</string>
+    <string name="error_empty_password">Empty Password</string>
+    <string name="error_user_already_exists">User already exists</string>
+    <string name="error_name_empty">Name empty</string>
+    <string name="error_loading_places">We could not load places</string>
+    <string name="error_loading_photos">We could not load photos</string>
+    <!-- Errors END-->
+
+    <!-- Login START-->
+    <string name="login_title">Login</string>
+    <string name="login_email_hint">E-mail</string>
+    <string name="login_password_hint">Password</string>
+    <string name="login_button">Login</string>
+    <!-- Login END-->
+
+    <!-- Register START-->
+    <string name="register_title">Register</string>
+    <string name="register_name_hint">Name</string>
+    <string name="register_email_hint">E-mail</string>
+    <string name="register_password_hint">Password</string>
+    <string name="register_button">Register</string>
+    <string name="register_go_to_login"><u>Go to Login Screen</u></string>
+    <!-- Register END-->
+
+    <!-- Menu START-->
+    <string name="menu_places">Places</string>
+    <string name="menu_photos">Photos</string>
+    <string name="menu_logout">Log out</string>
+    <!-- Menu END-->
+
+    <!-- Places START-->
+    <string name="places_random_message">Navigating to random place&#8230;</string>
+    <!-- Places END-->
+
+</resources>

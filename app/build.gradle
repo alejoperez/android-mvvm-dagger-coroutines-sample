@@ -1,0 +1,118 @@
+apply plugin: 'com.android.application'
+
+apply plugin: 'kotlin-android'
+
+apply plugin: 'kotlin-android-extensions'
+
+apply plugin: 'kotlin-kapt'
+
+android {
+    compileSdkVersion 28
+    defaultConfig {
+        applicationId "com.mvvm.dagger.coroutines.sample"
+        minSdkVersion 19
+        targetSdkVersion 28
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        vectorDrawables.useSupportLibrary = true
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    flavorDimensions "server"
+
+    productFlavors {
+
+        dev {
+            buildConfigField "String", "SERVER_URL", '"https://private-5bf26-yellowmock.apiary-mock.com/"'
+            applicationIdSuffix ".dev"
+        }
+
+        stg {
+            buildConfigField "String", "SERVER_URL", '"https://private-5bf26-yellowmock.apiary-mock.com/"'
+            applicationIdSuffix ".stg"
+        }
+
+        prod {
+            buildConfigField "String", "SERVER_URL", '"https://private-5bf26-yellowmock.apiary-mock.com/"'
+            applicationIdSuffix ".prod"
+        }
+
+    }
+    dataBinding {
+        enabled = true
+    }
+    androidExtensions {
+        experimental = true
+    }
+    testOptions {
+        unitTests {
+            returnDefaultValues = true
+            includeAndroidResources = true
+        }
+    }
+}
+
+dependencies {
+
+    //Unit Testing
+    testImplementation "org.robolectric:robolectric:$robolectric_version"
+    testImplementation "androidx.test.ext:junit:$junit_version"
+    testImplementation "androidx.test:runner:$test_runner_version"
+    testImplementation "androidx.arch.core:core-testing:$arch_core_testing_version"
+    testImplementation "org.mockito:mockito-inline:$mockito_version"
+    testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:$mockito_kotlin_version"
+
+    //Libs
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    //Kotlin
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation "org.jetbrains.anko:anko-commons:$anko_version"
+
+    //Android Support
+    implementation "androidx.legacy:legacy-support-v4:$android_legacy_version"
+    implementation "androidx.annotation:annotation:$android_x_version"
+    implementation "androidx.recyclerview:recyclerview:$android_x_version"
+    implementation "com.google.android.material:material:$google_android_material_version"
+    implementation "androidx.appcompat:appcompat:$androidx_appcompat_version"
+    implementation "androidx.constraintlayout:constraintlayout:$contraint_layout_version"
+
+    //Web Services
+    implementation "com.squareup.okhttp3:okhttp:$okhttp3_version"
+    implementation "com.squareup.okhttp3:logging-interceptor:$okhttp3_version"
+    implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
+    implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
+    implementation "com.jakewharton.retrofit:retrofit2-kotlin-coroutines-adapter:$retrofit_coroutines_version"
+
+    //Google Play Services
+    implementation "com.google.android.gms:play-services-maps:$google_services_version"
+
+    //Image Loading
+    implementation "com.github.bumptech.glide:glide:$glide_version"
+    kapt "com.github.bumptech.glide:compiler:$glide_version"
+
+    // LiveData + ViewModel
+    implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle_version"
+
+    // Room
+    implementation "androidx.room:room-runtime:$room_version"
+    implementation "androidx.room:room-ktx:$room_version"
+    kapt "androidx.room:room-compiler:$room_version"
+
+    // Dagger2
+    implementation "com.google.dagger:dagger-android:$dagger_version"
+    implementation "com.google.dagger:dagger-android-support:$dagger_version"
+    kapt "com.google.dagger:dagger-compiler:$dagger_version"
+    kapt "com.google.dagger:dagger-android-processor:$dagger_version"
+
+    //Coroutines
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.1.1'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.1.1'
+
+}

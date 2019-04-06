@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Primary Color START-->
+    <color name="colorPrimary">#009688</color>
+    <color name="colorPrimaryDark">#00796B</color>
+    <color name="colorPrimaryLight">#B2DFDB</color>
+    <!-- Primary Color END-->
+
+    <!-- Accent Color START-->
+    <color name="colorAccent">#FF9800</color>
+    <color name="colorAccentDark">#F57C00</color>
+    <color name="colorAccentLight">#FFE0B2</color>
+    <!-- Accent Color END-->
+
+    <!-- Text, Icons, Divider Colors START-->
+    <color name="colorTextIcons">#FFFFFF</color>
+    <color name="colorPrimaryText">#212121</color>
+    <color name="colorSecondaryText">#757575</color>
+    <color name="colorDivider">#BDBDBD</color>
+    <!-- Text, Icons, Divider Colors END-->
+
+</resources>

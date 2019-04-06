@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<font-family xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <!-- Italic START -->
+    <font
+        app:font="@font/caviar_dreams_normal"
+        app:fontStyle="italic"
+        app:fontWeight="400" />
+    <!-- Italic END -->
+
+    <!-- Normal START -->
+    <font
+        app:font="@font/caviar_dreams_italic"
+        app:fontStyle="normal"
+        app:fontWeight="400" />
+    <!-- Normal END -->
+
+    <!-- Bold START-->
+    <font
+        app:font="@font/caviar_dreams_bold"
+        app:fontStyle="normal"
+        app:fontWeight="700" />
+    <!-- Bold END-->
+</font-family>

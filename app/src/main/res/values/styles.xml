@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="AppTheme" parent="Theme.AppCompat.Light">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:textColorPrimary">@color/colorPrimaryText</item>
+        <item name="android:textColorSecondary">@color/colorSecondaryText</item>
+        <item name="actionBarTheme">@style/ActionBarTheme</item>
+    </style>
+
+    <style name="AppTheme.NoActionBar" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:textColorPrimary">@color/colorPrimaryText</item>
+        <item name="android:textColorSecondary">@color/colorSecondaryText</item>
+        <item name="actionBarTheme">@style/ActionBarTheme</item>
+    </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="ButtonPrimaryTheme" parent="Widget.AppCompat.Button.Colored">
+        <item name="colorButtonNormal">@color/colorPrimary</item>
+        <item name="android:textColor">@color/colorTextIcons</item>
+        <item name="android:layout_marginTop">@dimen/activity_padding</item>
+        <item name="android:layout_marginBottom">@dimen/activity_padding</item>
+    </style>
+
+    <style name="ButtonAccentTheme" parent="Widget.AppCompat.Button.Colored">
+        <item name="colorButtonNormal">@color/colorAccent</item>
+        <item name="android:textColor">@color/colorTextIcons</item>
+        <item name="android:fontFamily">@font/caviar_dreams_bold</item>
+        <item name="android:layout_margin">@dimen/activity_padding</item>
+    </style>
+
+    <style name="EditTextTheme">
+        <item name="android:textColor">@color/colorPrimaryText</item>
+        <item name="android:textColorHighlight">@color/colorPrimary</item>
+        <item name="android:textSize">@dimen/text_size_medium</item>
+        <item name="android:fontFamily">@font/caviar_dreams_normal</item>
+        <item name="colorControlNormal">@color/colorPrimary</item>
+        <item name="colorControlActivated">@color/colorAccent</item>
+        <item name="android:layout_margin">@dimen/activity_padding</item>
+    </style>
+
+    <style name="ActionBarTheme" parent="Base.Widget.AppCompat.Light.ActionBar">
+        <item name="android:textColorPrimary">@color/colorTextIcons</item>
+        <item name="android:colorBackground">@color/colorPrimary</item>
+        <item name="android:fontFamily">@font/caviar_dreams_bold</item>
+        <item name="android:homeAsUpIndicator">@drawable/ic_arrow_back</item>
+    </style>
+
+    <style name="ToolbarTheme" parent="ThemeOverlay.AppCompat">
+        <item name="android:textColorPrimary">@color/colorTextIcons</item>
+        <item name="android:fontFamily">@font/caviar_dreams_bold</item>
+        <item name="titleTextColor">@color/colorTextIcons</item>
+    </style>
+
+    <style name="TextViewMediumBoldTheme">
+        <item name="android:textSize">@dimen/text_size_medium</item>
+        <item name="android:fontFamily">@font/caviar_dreams_bold</item>
+        <item name="android:layout_margin">@dimen/activity_padding</item>
+    </style>
+
+</resources>

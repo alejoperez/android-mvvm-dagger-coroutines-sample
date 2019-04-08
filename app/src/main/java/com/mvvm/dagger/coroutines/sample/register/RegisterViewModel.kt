@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.databinding.ObservableField
 import androidx.databinding.ObservableInt
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.mvvm.dagger.coroutines.sample.R
 import com.mvvm.dagger.coroutines.sample.base.BaseViewModel
 import com.mvvm.dagger.coroutines.sample.data.user.UserRepository
@@ -12,14 +13,10 @@ import com.mvvm.dagger.coroutines.sample.livedata.Event
 import com.mvvm.dagger.coroutines.sample.utils.*
 import com.mvvm.dagger.coroutines.sample.webservice.RegisterRequest
 import com.mvvm.dagger.coroutines.sample.webservice.RegisterResponse
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import java.lang.Exception
+import kotlinx.coroutines.*
 import javax.inject.Inject
 
-class RegisterViewModel @Inject constructor(application: Application, private val userRepository: UserRepository): BaseViewModel(application) {
+class RegisterViewModel @Inject constructor(application: Application, private val userRepository: UserRepository) : BaseViewModel(application) {
 
     val name = ObservableField("")
     val email = ObservableField("")
@@ -35,25 +32,31 @@ class RegisterViewModel @Inject constructor(application: Application, private va
 
     fun register() {
         if (isValidForm()) {
-            showProgress()
-            CoroutineScope(Dispatchers.IO).launch {
-                val request = userRepository.register(getApplication(), RegisterRequest(name.getValueOrDefault(), email.getValueOrDefault(), password.getValueOrDefault()))
 
-                withContext(Dispatchers.Main) {
-                    hideProgress()
-                    try {
-                        val response = request.await()
-                        registerEvent.value = Event.success(response)
-                    } catch (e: Exception) {
-                        registerEvent.value = e.getEventError()
+            viewModelScope.launch {
+                try {
+                    showProgress()
+
+                    val response = withContext(Dispatchers.IO) {
+                        val request = RegisterRequest(name.getValueOrDefault(), email.getValueOrDefault(), password.getValueOrDefault())
+                        userRepository.registerAsync(getApplication(),request).await()
                     }
+
+
+
+                    registerEvent.value = Event.success(response)
+
+                } catch (t: Throwable) {
+                    registerEvent.value = t.getEventError()
+                } finally {
+                    hideProgress()
                 }
             }
 
         } else {
-            errorName.checkField(R.string.error_name_empty,isValidName())
-            errorEmail.checkField(R.string.error_invalid_email,isValidEmail())
-            errorPassword.checkField(R.string.error_empty_password,isValidPassword())
+            errorName.checkField(R.string.error_name_empty, isValidName())
+            errorEmail.checkField(R.string.error_invalid_email, isValidEmail())
+            errorPassword.checkField(R.string.error_empty_password, isValidPassword())
         }
     }
 

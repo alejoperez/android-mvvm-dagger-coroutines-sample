@@ -13,10 +13,8 @@ import javax.inject.Singleton
 @Singleton
 class PlacesLocalDataSource @Inject constructor(private val placesDao: PlaceDao) : IPlacesDataSource {
 
-    override suspend fun savePlaces(context: Context, places: List<Place>) = placesDao.savePlaces(places)
+    override suspend fun savePlacesAsync(context: Context, places: List<Place>) = placesDao.savePlaces(places)
 
-    override suspend fun getPlaces(context: Context): Deferred<List<Place>> = CoroutineScope(Dispatchers.IO).async {
-        placesDao.getPlaces()
-    }
+    override suspend fun getPlacesAsync(context: Context): Deferred<List<Place>> = CoroutineScope(Dispatchers.IO).async { placesDao.getPlaces() }
 
 }

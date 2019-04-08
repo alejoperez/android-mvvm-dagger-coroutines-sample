@@ -14,23 +14,18 @@ class PlacesRepository
 constructor(@Named(BaseRepositoryModule.LOCAL) private val localDataSource: IPlacesDataSource,
             @Named(BaseRepositoryModule.REMOTE) private val remoteDataSource: IPlacesDataSource) : IPlacesDataSource {
 
-
     private var hasCache = false
 
-    override suspend fun getPlaces(context: Context): Deferred<List<Place>> {
+    override suspend fun getPlacesAsync(context: Context): Deferred<List<Place>> {
         return if (hasCache) {
-            localDataSource.getPlaces(context)
+            localDataSource.getPlacesAsync(context)
         } else {
-            remoteDataSource.getPlaces(context)
-                    .also {
-                        savePlaces(context,it.await())
-                    }
+            remoteDataSource.getPlacesAsync(context).also { savePlacesAsync(context,it.await()) }
         }
     }
 
-    override suspend fun savePlaces(context: Context,places: List<Place>) {
-        localDataSource.savePlaces(context, places)
-        hasCache = true
+    override suspend fun savePlacesAsync(context: Context,places: List<Place>) {
+        localDataSource.savePlacesAsync(context, places).also { hasCache = true }
     }
 
     fun invalidateCache() {

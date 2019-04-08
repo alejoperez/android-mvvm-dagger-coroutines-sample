@@ -6,7 +6,7 @@ import kotlinx.coroutines.Deferred
 
 interface IPlacesDataSource {
 
-    suspend fun getPlaces(context: Context): Deferred<List<Place>>
+    suspend fun getPlacesAsync(context: Context): Deferred<List<Place>>
 
-    suspend fun savePlaces(context: Context, places: List<Place>)
+    suspend fun savePlacesAsync(context: Context, places: List<Place>)
 }

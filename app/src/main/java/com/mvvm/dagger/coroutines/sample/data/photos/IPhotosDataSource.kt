@@ -6,8 +6,8 @@ import kotlinx.coroutines.Deferred
 
 interface IPhotosDataSource {
 
-    suspend fun getPhotos(context: Context): Deferred<List<Photo>>
+    suspend fun getPhotosAsync(context: Context): Deferred<List<Photo>>
 
-    suspend fun savePhotos(context: Context, photos: List<Photo>)
+    suspend fun savePhotosAsync(context: Context, photos: List<Photo>)
 
 }

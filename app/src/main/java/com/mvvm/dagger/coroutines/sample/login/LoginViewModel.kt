@@ -5,6 +5,7 @@ import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
 import androidx.databinding.ObservableInt
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.mvvm.dagger.coroutines.sample.R
 import com.mvvm.dagger.coroutines.sample.base.BaseViewModel
 import com.mvvm.dagger.coroutines.sample.data.user.UserRepository
@@ -13,7 +14,6 @@ import com.mvvm.dagger.coroutines.sample.livedata.Event
 import com.mvvm.dagger.coroutines.sample.utils.*
 import com.mvvm.dagger.coroutines.sample.webservice.LoginRequest
 import com.mvvm.dagger.coroutines.sample.webservice.LoginResponse
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -39,19 +39,26 @@ class LoginViewModel @Inject constructor(application: Application,private val us
 
     fun login() {
         if (isValidForm()) {
-            showProgress()
-            CoroutineScope(Dispatchers.IO).launch {
-                val request = userRepository.login(getApplication(),LoginRequest(email.getValueOrDefault(), password.getValueOrDefault()))
-                withContext(Dispatchers.Main) {
-                    hideProgress()
-                    try {
-                        val response = request.await()
-                        loginEvent.value = Event.success(response)
-                    } catch (e: Exception) {
-                        loginEvent.value = e.getEventError()
+
+            viewModelScope.launch {
+
+                try {
+                    showProgress()
+
+                    val response = withContext(Dispatchers.IO) {
+                        val loginRequest = LoginRequest(email.getValueOrDefault(), password.getValueOrDefault())
+                        userRepository.loginAsync(getApplication(), loginRequest).await()
                     }
+
+                    loginEvent.value = Event.success(response)
+
+                } catch (t: Throwable) {
+                    loginEvent.value = t.getEventError()
+                } finally {
+                    hideProgress()
                 }
             }
+
         } else {
             emailError.checkField(R.string.error_invalid_email,isValidEmail())
             passwordError.checkField(R.string.error_empty_password,isValidPassword())

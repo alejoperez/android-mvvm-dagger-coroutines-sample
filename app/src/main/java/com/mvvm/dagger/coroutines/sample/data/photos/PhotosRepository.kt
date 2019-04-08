@@ -17,19 +17,16 @@ constructor(@Named(BaseRepositoryModule.LOCAL) private val localDataSource: IPho
 
     private var hasCache = false
 
-    override suspend fun getPhotos(context: Context): Deferred<List<Photo>> {
+    override suspend fun getPhotosAsync(context: Context): Deferred<List<Photo>> {
         return if (hasCache) {
-            localDataSource.getPhotos(context)
+            localDataSource.getPhotosAsync(context)
         } else {
-            remoteDataSource.getPhotos(context).also {
-                savePhotos(context,it.await())
-            }
+            remoteDataSource.getPhotosAsync(context).also { savePhotosAsync(context,it.await()) }
         }
     }
 
-    override suspend fun savePhotos(context: Context,photos: List<Photo>) {
-        localDataSource.savePhotos(context, photos)
-        hasCache = true
+    override suspend fun savePhotosAsync(context: Context,photos: List<Photo>) {
+        localDataSource.savePhotosAsync(context, photos).also { hasCache = true }
     }
 
     fun invalidateCache() {

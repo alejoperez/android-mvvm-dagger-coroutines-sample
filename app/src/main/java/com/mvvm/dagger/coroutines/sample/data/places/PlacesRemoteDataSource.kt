@@ -11,8 +11,8 @@ import javax.inject.Singleton
 @Singleton
 class PlacesRemoteDataSource @Inject constructor(private val api: IApi)  : IPlacesDataSource {
 
-    override suspend fun savePlaces(context: Context, places: List<Place>) = throw UnsupportedOperationException()
+    override suspend fun savePlacesAsync(context: Context, places: List<Place>) = throw UnsupportedOperationException()
 
-    override suspend fun getPlaces(context: Context): Deferred<List<Place>> = api.getPlaces()
+    override suspend fun getPlacesAsync(context: Context): Deferred<List<Place>> = api.getPlaces()
 
 }

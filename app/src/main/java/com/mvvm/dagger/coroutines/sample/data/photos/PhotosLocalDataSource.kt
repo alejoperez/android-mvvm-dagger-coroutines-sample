@@ -13,10 +13,8 @@ import javax.inject.Singleton
 @Singleton
 class PhotosLocalDataSource @Inject constructor(private val photoDao: PhotoDao) : IPhotosDataSource {
 
-    override suspend fun savePhotos(context: Context, photos: List<Photo>) = photoDao.savePhotos(photos)
+    override suspend fun savePhotosAsync(context: Context, photos: List<Photo>) = photoDao.savePhotos(photos)
 
-    override suspend fun getPhotos(context: Context): Deferred<List<Photo>> = CoroutineScope(Dispatchers.IO).async {
-        photoDao.getPhotos()
-    }
+    override suspend fun getPhotosAsync(context: Context): Deferred<List<Photo>> = CoroutineScope(Dispatchers.IO).async { photoDao.getPhotos() }
 
 }

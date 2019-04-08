@@ -11,8 +11,8 @@ import javax.inject.Singleton
 @Singleton
 class PhotosRemoteDataSource @Inject constructor(private val api: IApi) : IPhotosDataSource {
 
-    override suspend fun savePhotos(context: Context, photos: List<Photo>) = throw UnsupportedOperationException()
+    override suspend fun savePhotosAsync(context: Context, photos: List<Photo>) = throw UnsupportedOperationException()
 
-    override suspend fun getPhotos(context: Context): Deferred<List<Photo>> = api.getPhotos()
+    override suspend fun getPhotosAsync(context: Context): Deferred<List<Photo>> = api.getPhotos()
 
 }

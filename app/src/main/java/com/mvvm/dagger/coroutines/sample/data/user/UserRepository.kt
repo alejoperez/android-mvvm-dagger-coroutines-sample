@@ -18,29 +18,30 @@ class UserRepository
 @Inject constructor(@Named(BaseRepositoryModule.LOCAL) private val localDataSource: IUserDataSource,
                     @Named(BaseRepositoryModule.REMOTE) private val remoteDataSource: IUserDataSource) : IUserDataSource {
 
-    override suspend fun saveUser(context: Context, user: User) = localDataSource.saveUser(context, user)
+    override suspend fun saveUserAsync(context: Context, user: User) = localDataSource.saveUserAsync(context, user)
 
-    override suspend fun getUser(context: Context): Deferred<User> = localDataSource.getUser(context)
+    override suspend fun getUserAsync(context: Context): Deferred<User> = localDataSource.getUserAsync(context)
 
-    override suspend fun login(context: Context, request: LoginRequest): Deferred<LoginResponse> =
-            remoteDataSource.login(context, request)
-                    .also {
-                        val user = it.await()
-                        PreferenceManager<String>(context).putPreference(PreferenceManager.ACCESS_TOKEN, user.accessToken)
-                        localDataSource.saveUser(context, user.toUser())
-                    }
+    override suspend fun loginAsync(context: Context, request: LoginRequest): Deferred<LoginResponse> =
+            remoteDataSource.loginAsync(context, request).also {
+                val response = it.await()
+                updateUserAndAccessToken(context, response.toUser(), response.accessToken)
+            }
 
-    override suspend fun register(context: Context, request: RegisterRequest): Deferred<RegisterResponse> =
-            remoteDataSource.register(context, request)
-                    .also {
-                        val user = it.await()
-                        PreferenceManager<String>(context).putPreference(PreferenceManager.ACCESS_TOKEN, user.accessToken)
-                        localDataSource.saveUser(context, user.toUser())
-                    }
+    override suspend fun registerAsync(context: Context, request: RegisterRequest): Deferred<RegisterResponse> =
+            remoteDataSource.registerAsync(context, request).also {
+                val response = it.await()
+                updateUserAndAccessToken(context, response.toUser(), response.accessToken)
+            }
 
 
     override fun isLoggedIn(context: Context): Boolean = localDataSource.isLoggedIn(context)
 
     override fun logout(context: Context) = localDataSource.logout(context)
+
+    private suspend fun updateUserAndAccessToken(context: Context, user: User, accessToken: String) {
+        PreferenceManager<String>(context).putPreference(PreferenceManager.ACCESS_TOKEN, accessToken)
+        localDataSource.saveUserAsync(context, user)
+    }
 
 }

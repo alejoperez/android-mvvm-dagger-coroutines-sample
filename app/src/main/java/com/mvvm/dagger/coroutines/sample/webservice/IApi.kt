@@ -12,15 +12,15 @@ import javax.inject.Singleton
 interface IApi {
 
     @POST("user/login")
-    fun login(@Body request: LoginRequest): Deferred<LoginResponse>
+    fun loginAsync(@Body request: LoginRequest): Deferred<LoginResponse>
 
     @POST("user/register")
-    fun register(@Body request: RegisterRequest): Deferred<RegisterResponse>
+    fun registerAsync(@Body request: RegisterRequest): Deferred<RegisterResponse>
 
     @GET("places")
-    fun getPlaces(): Deferred<List<Place>>
+    fun getPlacesAsync(): Deferred<List<Place>>
 
     @GET("photos")
-    fun getPhotos(): Deferred<List<Photo>>
+    fun getPhotosAsync(): Deferred<List<Photo>>
 
 }

@@ -1,6 +1,6 @@
 package com.mvvm.dagger.coroutines.sample.photos
 
-import android.app.Application
+import androidx.annotation.VisibleForTesting
 import androidx.databinding.ObservableBoolean
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -9,12 +9,11 @@ import com.mvvm.dagger.coroutines.sample.data.room.Photo
 import com.mvvm.dagger.coroutines.sample.data.photos.PhotosRepository
 import com.mvvm.dagger.coroutines.sample.livedata.Event
 import com.mvvm.dagger.coroutines.sample.utils.getEventError
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class PhotosViewModel @Inject constructor(application: Application, private val photosRepository: PhotosRepository): BaseViewModel(application) {
+class PhotosViewModel @Inject constructor(private val photosRepository: PhotosRepository): BaseViewModel() {
 
     val isLoading = ObservableBoolean(false)
 
@@ -22,12 +21,12 @@ class PhotosViewModel @Inject constructor(application: Application, private val 
 
     fun getPhotos() {
 
-        viewModelScope.launch {
+        viewModelScope.launch(contextProvider.Main) {
 
             try {
                 showProgress()
 
-                val response = withContext(Dispatchers.IO) { photosRepository.getPhotosAsync(getApplication()).await() }
+                val response = withContext(contextProvider.IO) { photosRepository.getPhotosAsync().await() }
 
                 photos.value = Event.success(response)
 
@@ -40,8 +39,10 @@ class PhotosViewModel @Inject constructor(application: Application, private val 
         }
     }
 
-    private fun showProgress() = isLoading.set(true)
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    fun showProgress() = isLoading.set(true)
 
-    private fun hideProgress() = isLoading.set(false)
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    fun hideProgress() = isLoading.set(false)
 
 }

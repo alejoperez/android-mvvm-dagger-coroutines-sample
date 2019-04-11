@@ -6,7 +6,7 @@ import retrofit2.HttpException
 
 fun <T> Throwable.getEventError(): Event<T> {
     return when (this) {
-        is HttpException -> Event.networkError()
-        else -> Event.failure()
+        is HttpException -> Event.failure()
+        else -> Event.networkError()
     }
 }

@@ -1,5 +1,6 @@
 package com.mvvm.dagger.coroutines.sample.login
 
+import androidx.annotation.VisibleForTesting
 import androidx.databinding.library.baseAdapters.BR
 import androidx.lifecycle.Observer
 import com.mvvm.dagger.coroutines.sample.R
@@ -28,19 +29,21 @@ class LoginActivity : BaseActivity<LoginViewModel,ActivityLoginBinding>() {
 
     private val onLoginResponseObserver = Observer<Event<LoginResponse>> { onLoginResponse(it) }
 
-    private fun onLoginResponse(response: Event<LoginResponse>) {
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    fun onLoginResponse(response: Event<LoginResponse>) {
         when (response.status) {
             Status.SUCCESS -> onLoginSuccess()
             Status.FAILURE -> onLoginFailure()
             Status.NETWORK_ERROR -> onNetworkError()
-            else -> Unit
         }
     }
 
-    private fun onLoginSuccess() {
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    fun onLoginSuccess() {
         startActivity<MainActivity>()
         finishAffinity()
     }
 
-    private fun onLoginFailure() = showAlert(R.string.error_invalid_credentials)
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    fun onLoginFailure() = showAlert(R.string.error_invalid_credentials)
 }

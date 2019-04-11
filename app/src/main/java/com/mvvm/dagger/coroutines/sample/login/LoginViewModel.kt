@@ -1,6 +1,6 @@
 package com.mvvm.dagger.coroutines.sample.login
 
-import android.app.Application
+import androidx.annotation.VisibleForTesting
 import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
 import androidx.databinding.ObservableInt
@@ -14,12 +14,11 @@ import com.mvvm.dagger.coroutines.sample.livedata.Event
 import com.mvvm.dagger.coroutines.sample.utils.*
 import com.mvvm.dagger.coroutines.sample.webservice.LoginRequest
 import com.mvvm.dagger.coroutines.sample.webservice.LoginResponse
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class LoginViewModel @Inject constructor(application: Application,private val userRepository: UserRepository): BaseViewModel(application) {
+class LoginViewModel @Inject constructor(private val userRepository: UserRepository): BaseViewModel() {
 
     val email = ObservableField("")
     val password = ObservableField("")
@@ -31,29 +30,31 @@ class LoginViewModel @Inject constructor(application: Application,private val us
 
     val loginEvent = MutableLiveData<Event<LoginResponse>>()
 
-    private fun isValidEmail(): Boolean = email.getValueOrDefault().isNotEmpty() && android.util.Patterns.EMAIL_ADDRESS.matcher(email.getValueOrDefault()).matches()
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    fun isValidEmail(): Boolean = email.getValueOrDefault().isNotEmpty() && android.util.Patterns.EMAIL_ADDRESS.matcher(email.getValueOrDefault()).matches()
 
-    private fun isValidPassword(): Boolean = password.getValueOrDefault().isNotEmpty()
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    fun isValidPassword(): Boolean = password.getValueOrDefault().isNotEmpty()
 
-    private fun isValidForm(): Boolean = isValidEmail() && isValidPassword()
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    fun isValidForm(): Boolean = isValidEmail() && isValidPassword()
 
     fun login() {
         if (isValidForm()) {
 
-            viewModelScope.launch {
+            viewModelScope.launch(contextProvider.Main) {
 
                 try {
                     showProgress()
-
-                    val response = withContext(Dispatchers.IO) {
+                    val response = withContext(contextProvider.IO) {
                         val loginRequest = LoginRequest(email.getValueOrDefault(), password.getValueOrDefault())
-                        userRepository.loginAsync(getApplication(), loginRequest).await()
+                        userRepository.loginAsync(loginRequest).await()
+
                     }
-
                     loginEvent.value = Event.success(response)
-
                 } catch (t: Throwable) {
                     loginEvent.value = t.getEventError()
+
                 } finally {
                     hideProgress()
                 }
@@ -65,7 +66,9 @@ class LoginViewModel @Inject constructor(application: Application,private val us
         }
     }
 
-    private fun showProgress() = isLoading.set(true)
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    fun showProgress() = isLoading.set(true)
 
-    private fun hideProgress() = isLoading.set(false)
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    fun hideProgress() = isLoading.set(false)
 }

@@ -2,6 +2,7 @@ package com.mvvm.dagger.coroutines.sample.places
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.Observer
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -33,9 +34,11 @@ class PlacesFragment: BaseFragment<PlacesViewModel,FragmentPlacesBinding>(), OnM
             BR.viewModel to viewModel
     )
 
-    private lateinit var googleMap: GoogleMap
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    lateinit var googleMap: GoogleMap
 
-    private var currentPlaces: List<Place>? = emptyList()
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    var currentPlaces: List<Place> = emptyList()
 
 
     override fun initViewModel() {
@@ -60,30 +63,31 @@ class PlacesFragment: BaseFragment<PlacesViewModel,FragmentPlacesBinding>(), OnM
         viewModel.getPlaces()
     }
 
-    private fun onPlacesResponse(response: Event<List<Place>>) {
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    fun onPlacesResponse(response: Event<List<Place>>) {
         when(response.status) {
-            Status.SUCCESS -> onPlacesSuccess(response.peekData())
+            Status.SUCCESS -> onPlacesSuccess(response.peekData() ?: emptyList())
             Status.FAILURE -> onPlacesFailure()
             Status.NETWORK_ERROR -> onNetworkError()
-            else -> Unit
         }
     }
 
-    private fun onPlacesSuccess(places: List<Place>?) {
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    fun onPlacesSuccess(places: List<Place>) {
         currentPlaces = places
         loadPlacesInMap()
         randomPlace()
     }
 
-    private fun onPlacesFailure() {
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    fun onPlacesFailure() {
         showAlert(R.string.error_loading_places)
     }
 
-    private fun loadPlacesInMap() {
-        currentPlaces?.let {
-            for (p in it) {
-                googleMap.addMarker(buildMarkerPlace(p))
-            }
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    fun loadPlacesInMap() {
+        for (p in currentPlaces) {
+            googleMap.addMarker(buildMarkerPlace(p))
         }
     }
 
@@ -94,16 +98,13 @@ class PlacesFragment: BaseFragment<PlacesViewModel,FragmentPlacesBinding>(), OnM
                 .snippet(p.address)
     }
 
-    private fun randomPlace() {
-        currentPlaces?.let {
-
-            if (it.isNotEmpty()) {
-                val randomPosition = (0 until it.size).shuffled().first()
-                val place = it[randomPosition]
-                val cameraPosition = CameraPosition.Builder().target(LatLng(place.lat, place.lon)).zoom(ZOOM).build()
-                googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
-            }
-
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    fun randomPlace() {
+        if (currentPlaces.isNotEmpty()) {
+            val randomPosition = (0 until currentPlaces.size).shuffled().first()
+            val place = currentPlaces[randomPosition]
+            val cameraPosition = CameraPosition.Builder().target(LatLng(place.lat, place.lon)).zoom(ZOOM).build()
+            googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
         }
     }
 

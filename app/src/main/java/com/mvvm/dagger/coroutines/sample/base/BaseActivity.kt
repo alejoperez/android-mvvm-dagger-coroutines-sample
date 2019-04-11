@@ -5,6 +5,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import android.os.Bundle
 import androidx.annotation.IdRes
+import androidx.annotation.VisibleForTesting
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -21,8 +22,11 @@ abstract class BaseActivity<VM: BaseViewModel,DB: ViewDataBinding> : AppCompatAc
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    protected lateinit var viewModel: VM
-    protected lateinit var dataBinding: DB
+    @VisibleForTesting(otherwise = VisibleForTesting.PROTECTED)
+    lateinit var viewModel: VM
+
+    @VisibleForTesting(otherwise = VisibleForTesting.PROTECTED)
+    lateinit var dataBinding: DB
 
     abstract fun getLayoutId(): Int
     abstract fun getViewModelClass(): Class<VM>
@@ -76,7 +80,8 @@ abstract class BaseActivity<VM: BaseViewModel,DB: ViewDataBinding> : AppCompatAc
 
     private fun isNewFragment(@IdRes fragmentId: Int, tag: String): Boolean = !getCurrentFragment(fragmentId)?.tag.equals(tag)
 
-    private fun getCurrentFragment(@IdRes fragmentId: Int): Fragment? = supportFragmentManager.findFragmentById(fragmentId)
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    fun getCurrentFragment(@IdRes fragmentId: Int): Fragment? = supportFragmentManager.findFragmentById(fragmentId)
 
     override fun <T : BaseViewModel> obtainViewModel(clazz: Class<T>): T = ViewModelProviders.of(this,viewModelFactory).get(clazz)
 

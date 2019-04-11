@@ -1,6 +1,8 @@
 package com.mvvm.dagger.coroutines.sample.base
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
+import com.mvvm.dagger.coroutines.sample.coroutines.CoroutineContextProvider
 
-abstract class BaseViewModel(application: Application): AndroidViewModel(application)
+abstract class BaseViewModel: ViewModel() {
+    open var contextProvider: CoroutineContextProvider = CoroutineContextProvider()
+}

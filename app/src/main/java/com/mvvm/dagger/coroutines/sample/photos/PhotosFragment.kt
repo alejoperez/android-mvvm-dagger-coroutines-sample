@@ -2,6 +2,7 @@ package com.mvvm.dagger.coroutines.sample.photos
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.mvvm.dagger.coroutines.sample.BR
@@ -42,16 +43,17 @@ class PhotosFragment : BaseFragment<PhotosViewModel,FragmentPhotosBinding>(), Ba
 
     private val onPhotosResponseObserver = Observer<Event<List<Photo>>> { onPhotosResponse(it) }
 
-    private fun onPhotosResponse(response: Event<List<Photo>>) {
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    fun onPhotosResponse(response: Event<List<Photo>>) {
         when(response.status) {
             Status.SUCCESS -> onPhotosSuccess(response.peekData())
             Status.FAILURE -> onPhotosFailure()
             Status.NETWORK_ERROR -> onNetworkError()
-            else -> Unit
         }
     }
 
-    private fun onPhotosSuccess(photos: List<Photo>?) {
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    fun onPhotosSuccess(photos: List<Photo>?) {
         dataBinding.rvPhotos.apply {
             layoutManager = LinearLayoutManager(getViewContext())
             setHasFixedSize(true)
@@ -60,7 +62,8 @@ class PhotosFragment : BaseFragment<PhotosViewModel,FragmentPhotosBinding>(), Ba
         }
     }
 
-    private fun onPhotosFailure() {
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    fun onPhotosFailure() {
         showAlert(R.string.error_loading_photos)
     }
 

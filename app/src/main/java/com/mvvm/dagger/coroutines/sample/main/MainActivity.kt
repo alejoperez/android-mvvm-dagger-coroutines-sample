@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.core.view.GravityCompat
 import android.view.Menu
 import android.view.MenuItem
+import androidx.annotation.VisibleForTesting
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.lifecycle.Observer
 import com.google.android.material.navigation.NavigationView
@@ -49,15 +50,19 @@ class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>(), Navigat
         viewModel.user.observe(this, userEventObserver)
     }
 
-    private val userEventObserver = Observer<Event<User>> { onUserResponseSuccess(it) }
+    private val userEventObserver = Observer<Event<User>> { onUserResponse(it) }
 
-    private fun onUserResponseSuccess(response: Event<User>) {
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    fun onUserResponse(response: Event<User>) {
         when (response.status) {
-            Status.SUCCESS -> {
-                dataBinding.user = response.peekData()
-            }
+            Status.SUCCESS -> setUser(response.peekData())
             else -> showAlert(R.string.error_user)
         }
+    }
+
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    fun setUser(user: User?) {
+        dataBinding.user = user
     }
 
 
@@ -75,20 +80,23 @@ class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>(), Navigat
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.nav_places -> {
-                replaceFragment(PlacesFragment.newInstance(), R.id.main_content_view, PlacesFragment.TAG)
-            }
-            R.id.nav_photos -> {
-                replaceFragment(PhotosFragment.newInstance(), R.id.main_content_view, PhotosFragment.TAG)
-            }
-            R.id.nav_logout -> {
-                viewModel.logout()
-                finishAffinity()
-            }
-        }
-
+        onMenuItemClicked(item.itemId)
         dataBinding.drawerLayout.closeDrawer(GravityCompat.START)
         return true
+    }
+
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    fun onMenuItemClicked(menuItem: Int) {
+        when (menuItem) {
+            R.id.nav_places -> replaceFragment(PlacesFragment.newInstance(), R.id.main_content_view, PlacesFragment.TAG)
+            R.id.nav_photos -> replaceFragment(PhotosFragment.newInstance(), R.id.main_content_view, PhotosFragment.TAG)
+            R.id.nav_logout -> logout()
+        }
+    }
+
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    fun logout() {
+        viewModel.logout()
+        finishAffinity()
     }
 }

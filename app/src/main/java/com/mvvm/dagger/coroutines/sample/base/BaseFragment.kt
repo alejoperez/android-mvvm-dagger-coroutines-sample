@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.VisibleForTesting
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -23,8 +24,11 @@ abstract class BaseFragment<VM: BaseViewModel,DB: ViewDataBinding>: Fragment(), 
 
     private lateinit var fragmentContext: Context
 
-    protected lateinit var dataBinding: DB
-    protected lateinit var viewModel: VM
+    @VisibleForTesting(otherwise = VisibleForTesting.PROTECTED)
+    lateinit var dataBinding: DB
+
+    @VisibleForTesting(otherwise = VisibleForTesting.PROTECTED)
+    lateinit var viewModel: VM
 
     abstract fun getLayoutId() : Int
     abstract fun getViewModelClass(): Class<VM>

@@ -1,69 +1,37 @@
 package com.mvvm.dagger.coroutines.sample.splash
 
-import com.mvvm.dagger.coroutines.sample.application.SampleApp
-import com.mvvm.dagger.coroutines.sample.base.BaseViewModelTest
+import com.mvvm.dagger.coroutines.sample.base.BaseTest
 import com.mvvm.dagger.coroutines.sample.data.user.UserRepository
-import com.mvvm.dagger.coroutines.sample.livedata.Status
 import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
-import io.reactivex.Single
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Assert
 import org.junit.Test
 
-class SplashViewModelTest: BaseViewModelTest() {
-
-    private val application = mock<SampleApp>()
-
+@ExperimentalCoroutinesApi
+class SplashViewModelTest: BaseTest() {
 
     @Test
     fun userLoggedEventTrueTest() {
         val userRepository = mock<UserRepository> {
-            on { isLoggedIn(application) } doReturn Single.just(true)
+            on { isLoggedIn() } doReturn true
         }
 
-        val viewModel = SplashViewModel(application,userRepository)
+        val viewModel = SplashViewModel(userRepository)
 
-        viewModel.isUserLoggedIn()
-
-        val liveDataValue = viewModel.isUserLoggedEvent.value
-
-        Assert.assertNotNull("Live Data value shouldn't be null",liveDataValue)
-        Assert.assertEquals("Status should be SUCCESS",Status.SUCCESS, liveDataValue?.status)
-        Assert.assertTrue("User should be logged in", liveDataValue?.peekData() ?: false)
+        Assert.assertTrue("user should be logged in",viewModel.isUserLoggedIn())
     }
 
     @Test
     fun userLoggedEventFalseTest() {
         val userRepository = mock<UserRepository> {
-            on { isLoggedIn(application) } doReturn Single.just(false)
+            on { isLoggedIn() } doReturn false
         }
 
-        val viewModel = SplashViewModel(application,userRepository)
+        val viewModel = SplashViewModel(userRepository)
 
-        viewModel.isUserLoggedIn()
+        Assert.assertFalse("user shouldn't be logged in",viewModel.isUserLoggedIn())
 
-        val liveDataValue = viewModel.isUserLoggedEvent.value
-
-        Assert.assertNotNull("Live Data value shouldn't be null",liveDataValue)
-        Assert.assertEquals("Status should be SUCCESS", Status.SUCCESS, liveDataValue?.status)
-        Assert.assertFalse("User shouldn't be logged in", liveDataValue?.peekData() ?: true)
-    }
-
-    @Test
-    fun userLoggedEventFailureTest() {
-        val userRepository = mock<UserRepository> {
-            on { isLoggedIn(application) } doReturn Single.error(Exception())
-        }
-
-        val viewModel = SplashViewModel(application,userRepository)
-
-        viewModel.isUserLoggedIn()
-
-        val liveDataValue = viewModel.isUserLoggedEvent.value
-
-        Assert.assertNotNull("Live Data value shouldn't be null",liveDataValue)
-        Assert.assertEquals("Status should be FAILURE",Status.FAILURE, liveDataValue?.status)
-        Assert.assertNull("Value should be null",liveDataValue?.peekData())
     }
 
 }

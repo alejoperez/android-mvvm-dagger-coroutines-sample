@@ -1,5 +1,6 @@
 package com.mvvm.dagger.coroutines.sample.register
 
+import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.Observer
 import com.mvvm.dagger.coroutines.sample.BR
 import com.mvvm.dagger.coroutines.sample.R
@@ -36,20 +37,22 @@ class RegisterActivity : BaseActivity<RegisterViewModel,ActivityRegisterBinding>
 
     private val onRegisterResponseObserver = Observer<Event<RegisterResponse>> { onRegisterResponse(it) }
 
-    private fun onRegisterResponse(response: Event<RegisterResponse>) {
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    fun onRegisterResponse(response: Event<RegisterResponse>) {
         when(response.status) {
             Status.SUCCESS -> onRegisterSuccess()
             Status.FAILURE -> onRegisterFailure()
             Status.NETWORK_ERROR -> onNetworkError()
-            else -> Unit
         }
     }
 
-    private fun onRegisterSuccess() {
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    fun onRegisterSuccess() {
         startActivity<MainActivity>()
         finishAffinity()
     }
 
-    private fun onRegisterFailure() = showAlert(R.string.error_user_already_exists)
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    fun onRegisterFailure() = showAlert(R.string.error_user_already_exists)
 
 }

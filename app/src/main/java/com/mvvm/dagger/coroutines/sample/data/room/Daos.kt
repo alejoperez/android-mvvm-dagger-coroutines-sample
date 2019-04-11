@@ -9,10 +9,10 @@ import androidx.room.Query
 interface UserDao {
 
     @Query("SELECT * from user LIMIT 1")
-    suspend fun getUser(): User
+    fun getUser(): User
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun saveUser(user: User)
+    fun saveUser(user: User)
 
 }
 
@@ -20,10 +20,10 @@ interface UserDao {
 interface PlaceDao {
 
     @Query("SELECT * from place")
-    suspend fun getPlaces(): List<Place>
+    fun getPlaces(): List<Place>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun savePlaces(places: List<Place>)
+    fun savePlaces(places: List<Place>)
 
 }
 
@@ -31,8 +31,8 @@ interface PlaceDao {
 interface PhotoDao {
 
     @Query("SELECT * from photo")
-    suspend fun getPhotos(): List<Photo>
+    fun getPhotos(): List<Photo>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun savePhotos(photos: List<Photo>)
+    fun savePhotos(photos: List<Photo>)
 }

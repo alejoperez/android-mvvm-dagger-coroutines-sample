@@ -22,12 +22,12 @@ class SplashActivity : BaseActivity<SplashViewModel, ActivitySplashBinding>() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Handler().postDelayed({ goToNextScreen() }, SPLASH_DELAY)
+        Handler().postDelayed({ goToNextScreen(viewModel.isUserLoggedIn()) }, SPLASH_DELAY)
     }
 
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
-    fun goToNextScreen() {
-        if (viewModel.isUserLoggedIn()) {
+    fun goToNextScreen(isLoggedIn: Boolean) {
+        if (isLoggedIn) {
             startActivity<MainActivity>()
         } else {
             startActivity<RegisterActivity>()

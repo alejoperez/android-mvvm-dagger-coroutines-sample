@@ -1,6 +1,6 @@
 package com.mvvm.dagger.coroutines.sample.data.places
 
-import android.content.Context
+import androidx.annotation.VisibleForTesting
 import com.mvvm.dagger.coroutines.sample.data.BaseRepositoryModule
 import com.mvvm.dagger.coroutines.sample.data.room.Place
 import kotlinx.coroutines.Deferred
@@ -14,18 +14,19 @@ class PlacesRepository
 constructor(@Named(BaseRepositoryModule.LOCAL) private val localDataSource: IPlacesDataSource,
             @Named(BaseRepositoryModule.REMOTE) private val remoteDataSource: IPlacesDataSource) : IPlacesDataSource {
 
-    private var hasCache = false
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    var hasCache = false
 
-    override suspend fun getPlacesAsync(context: Context): Deferred<List<Place>> {
+    override suspend fun getPlacesAsync(): Deferred<List<Place>> {
         return if (hasCache) {
-            localDataSource.getPlacesAsync(context)
+            localDataSource.getPlacesAsync()
         } else {
-            remoteDataSource.getPlacesAsync(context).also { savePlacesAsync(context,it.await()) }
+            remoteDataSource.getPlacesAsync().also { savePlacesAsync(it.await()) }
         }
     }
 
-    override suspend fun savePlacesAsync(context: Context,places: List<Place>) {
-        localDataSource.savePlacesAsync(context, places).also { hasCache = true }
+    override suspend fun savePlacesAsync(places: List<Place>) {
+        localDataSource.savePlacesAsync(places).also { hasCache = true }
     }
 
     fun invalidateCache() {

@@ -1,6 +1,7 @@
 package com.mvvm.dagger.coroutines.sample.register
 
-import android.app.Application
+import androidx.annotation.VisibleForTesting
+import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
 import androidx.databinding.ObservableInt
 import androidx.lifecycle.MutableLiveData
@@ -16,7 +17,7 @@ import com.mvvm.dagger.coroutines.sample.webservice.RegisterResponse
 import kotlinx.coroutines.*
 import javax.inject.Inject
 
-class RegisterViewModel @Inject constructor(application: Application, private val userRepository: UserRepository) : BaseViewModel(application) {
+class RegisterViewModel @Inject constructor(private val userRepository: UserRepository) : BaseViewModel() {
 
     val name = ObservableField("")
     val email = ObservableField("")
@@ -26,23 +27,21 @@ class RegisterViewModel @Inject constructor(application: Application, private va
     val errorEmail = ObservableInt(BindingAdapters.EMPTY)
     val errorPassword = ObservableInt(BindingAdapters.EMPTY)
 
-    val isLoading = ObservableField(false)
+    val isLoading = ObservableBoolean(false)
 
     val registerEvent = MutableLiveData<Event<RegisterResponse>>()
 
     fun register() {
         if (isValidForm()) {
 
-            viewModelScope.launch {
+            viewModelScope.launch(contextProvider.Main) {
                 try {
                     showProgress()
 
-                    val response = withContext(Dispatchers.IO) {
+                    val response = withContext(contextProvider.IO) {
                         val request = RegisterRequest(name.getValueOrDefault(), email.getValueOrDefault(), password.getValueOrDefault())
-                        userRepository.registerAsync(getApplication(),request).await()
+                        userRepository.registerAsync(request).await()
                     }
-
-
 
                     registerEvent.value = Event.success(response)
 
@@ -60,15 +59,22 @@ class RegisterViewModel @Inject constructor(application: Application, private va
         }
     }
 
-    private fun isValidName(): Boolean = name.getValueOrDefault().isNotEmpty()
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    fun isValidName(): Boolean = name.getValueOrDefault().isNotEmpty()
 
-    private fun isValidEmail(): Boolean = email.getValueOrDefault().isNotEmpty() && android.util.Patterns.EMAIL_ADDRESS.matcher(email.getValueOrDefault()).matches()
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    fun isValidEmail(): Boolean = email.getValueOrDefault().isNotEmpty() && android.util.Patterns.EMAIL_ADDRESS.matcher(email.getValueOrDefault()).matches()
 
-    private fun isValidPassword(): Boolean = password.getValueOrDefault().isNotEmpty()
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    fun isValidPassword(): Boolean = password.getValueOrDefault().isNotEmpty()
 
-    private fun isValidForm(): Boolean = isValidName() && isValidEmail() && isValidPassword()
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    fun isValidForm(): Boolean = isValidName() && isValidEmail() && isValidPassword()
 
-    private fun showProgress() = isLoading.set(true)
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    fun showProgress() = isLoading.set(true)
 
-    private fun hideProgress() = isLoading.set(false)
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    fun hideProgress() = isLoading.set(false)
+
 }
